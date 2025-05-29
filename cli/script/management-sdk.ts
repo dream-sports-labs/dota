@@ -90,7 +90,7 @@ class AccountManager {
     OWNER: "Owner",
     COLLABORATOR: "Collaborator",
   };
-  public static SERVER_URL = "https://dota.dreamsportslabs.com";
+  public static SERVER_URL = "http://localhost:3000";
 
   private static API_VERSION: number = 2;
 

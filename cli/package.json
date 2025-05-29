@@ -1,48 +1,22 @@
 {
   "name": "dream-dota-cli",
-  "version": "0.0.3",
-  "description": "Management CLI for the DOTA service",
-  "license": "MIT",
-  "author": "Dream Sports Labs <info@dream-sports-labs.com>",
-  "keywords": [
-    "cli",
-    "dota",
-    "ota",
-    "react-native"
-  ],
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/dream-sports-labs/dota.git"
-  },
-  "bugs": {
-    "url": "https://github.com/dream-sports-labs/dota/issues"
-  },
-  "homepage": "https://github.com/dream-sports-labs/dota#readme",
-  "bin": {
-    "dota": "bin/script/cli.js"
-  },
+  "version": "0.0.8",
+  "description": "Management CLI for the Dota service",
+  "main": "./script/cli.js",
   "scripts": {
     "start": "node ./bin/script/cli.js",
     "build": "tsc",
     "prettier": "prettier --write \"./**/*.ts\"",
-    "lint": "eslint \"script/**/*.ts\"",
-    "lint:fix": "eslint \"script/**/*.ts\" --fix",
-    "debug": "node --inspect-brk bin/script/cli.js",
-    "setup": "npm ci && npm run build && npm link",
-    "install-global": "npm run build && npm install -g ."
+    "lint": "npx eslint ./script/**/*.ts",
+    "lint:fix": "npx eslint ./script/**/*.ts --fix",
+    "debug": "node --inspect-brk ./bin/script/cli.js",
+    "cli:setup": "npm cache clean --force && rm -rf node_modules package-lock.json && npm install && npm run build && npm install -g .",
+    "exec": "npm run build && npm install -g"
   },
-  "files": [
-    "bin/",
-    "script/",
-    "README.md",
-    "LICENSE"
-  ],
-  "publishConfig": {
-    "access": "public"
+  "bin": {
+    "dota": "./bin/script/cli.js"
   },
-  "engines": {
-    "node": ">=14"
-  },
+  "author": "Microsoft",
   "dependencies": {
     "backslash": "^0.2.0",
     "chalk": "^4.1.2",
@@ -90,5 +64,11 @@
     "typescript": "^5.1.3",
     "which": "^3.0.1",
     "wordwrap": "^1.0.0"
-  }
+  },
+  "files": [
+    "bin/",
+    "script/",
+    "README.md",
+    "LICENSE"
+  ]
 }

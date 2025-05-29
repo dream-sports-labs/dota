@@ -48,7 +48,7 @@ import {
 } from "./utils/file-utils";
 import { IMetricsCommand } from "../script/types/cli";
 
-const configFilePath: string = path.join(process.cwd(), ".dota.config");
+const configFilePath: string = path.join(process.env.LOCALAPPDATA || process.env.HOME, ".dota.config");
 const emailValidator = require("email-validator");
 const packageJson = require("../../package.json");
 const parseXml = Q.denodeify(require("xml2js").parseString);
