@@ -117,13 +117,31 @@ REDIS_TLS=true`}</code>
         <h2 className="text-2xl font-bold mb-4">Accessing Metrics</h2>
 
         <p className="mb-4">
-          You can access metrics directly through the DOTA Dashboard.
+          You can access metrics directly through the DOTA CLI or DOTA Dashboard.
         </p>
 
-        {/* <h3 className="text-xl font-semibold mb-3">Via CLI</h3>
-        <pre className="code-block">
-          <code>npx dota metrics --upload-path=my-org/my-project/my-bucket</code>
-        </pre> */}
+        <h3 className="text-xl font-semibold mb-3 mt-6">Via CLI</h3>
+        <p className="mb-4">
+          You can also access release metrics directly from your terminal using the DOTA CLI:
+        </p>
+        <pre className="code-block mb-4">
+          <code>{`npx dota metrics <org>/<app> <deployment> <label> <targetVersion>`}</code>
+        </pre>
+        <p className="mb-4">
+          <strong>Example:</strong>
+        </p>
+        <pre className="code-block mb-4">
+          <code>{`npx dota metrics organization-one/app-one "Deployment One" v1 1.0.0`}</code>
+        </pre>
+        <p className="mb-4">
+          This will output:
+        </p>
+        <pre className="code-block mb-4">
+          <code>{`Metrics for organization-one/app-one [Deployment One] label: v1, target version: 1.0.0
+  Rollout:   100%
+  Adoption:  0.00% (0 of 0 installs)
+  Rollbacks: 0.00% (0 of 0 installs)`}</code>
+        </pre>
 
         <h3 className="text-xl font-semibold mb-3 mt-6">Via Dashboard</h3>
         <p className="mb-4">

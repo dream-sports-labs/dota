@@ -764,6 +764,36 @@ export default function CLICommands() {
               </code>
             </pre>
           </div>
+
+          {/* -------------------------------------------------------------
+              METRICS
+          ------------------------------------------------------------- */}
+          <div className="mb-8" id="metrics">
+            <h2 className="text-2xl font-bold mb-4">Metrics</h2>
+            <p className="mb-4">
+              View installation and adoption metrics for a specific release of your app using the following command:
+            </p>
+            <p className="mb-2">Usage:</p>
+            <pre className="code-block mb-6">
+              <code>{`  dota metrics <org>/<app> <deployment> <label> <targetVersion>`}</code>
+            </pre>
+            <p className="mb-2">Example:</p>
+            <pre className="code-block mb-6">
+              <code>{`  dota metrics organization-one/app-one "Deployment One" v1 1.0.0`}</code>
+            </pre>
+            <p className="mb-4">This will output:</p>
+            <pre className="code-block mb-6">
+              <code>{`Metrics for organization-one/app-one [Deployment One] label: v1, target version: 1.0.0
+  Rollout:   100%
+  Adoption:  0.00% (0 of 0 installs)
+  Rollbacks: 0.00% (0 of 0 installs)`}</code>
+            </pre>
+            <ul className="list-disc pl-6 space-y-2 mb-4">
+              <li><strong>Rollout</strong> - The percentage of users this release is available to.</li>
+              <li><strong>Adoption</strong> - The percentage and count of successful installs out of downloads.</li>
+              <li><strong>Rollbacks</strong> - The percentage and count of rollbacks out of installs.</li>
+            </ul>
+          </div>
         </div>
       </div>
     </div>

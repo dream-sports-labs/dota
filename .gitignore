@@ -67,3 +67,6 @@ AzuriteConfig
 
 /web/build
 dota
+
+# DOTA CLI config
+cli/.dota.config

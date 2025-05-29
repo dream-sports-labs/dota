@@ -561,7 +561,7 @@ function App() {
               </div>
             </div>
             {/* Trusted by companies section - anchored to bottom of hero */}
-            <div className="w-full flex flex-col items-center justify-center pb-20">
+            <div className="w-full flex flex-col items-center justify-center pb-8">
               <div className="text-sm uppercase tracking-widest text-text-tertiary text-center mb-4 font-semibold">
                 Trusted by
               </div>
