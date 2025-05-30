@@ -48,7 +48,7 @@ import {
 } from "./utils/file-utils";
 import { IMetricsCommand } from "../script/types/cli";
 
-const configFilePath: string = path.join(process.env.LOCALAPPDATA || process.env.HOME, ".dota.config");
+const configFilePath: string = path.join(process.cwd(), "dota.config");
 const emailValidator = require("email-validator");
 const packageJson = require("../../package.json");
 const parseXml = Q.denodeify(require("xml2js").parseString);
@@ -57,7 +57,7 @@ import { Organisation } from "./types/rest-definitions";
 const properties = require("properties");
 
 const CLI_HEADERS: Headers = {
-  "X-Dota-CodePush-Version": packageJson.version,
+  "X-CodePush-Version": packageJson.version,
 };
 
 /** Deprecated */
@@ -85,6 +85,9 @@ export const spawn = childProcess.spawn;
 export const execSync = childProcess.execSync;
 
 let connectionInfo: ILoginConnectionInfo;
+
+// Utility to check for --verbose flag
+const isVerbose = process.argv.includes('--verbose');
 
 export const confirm = (message: string = "Are you sure?"): Promise<boolean> => {
   message += " (y/N):";
@@ -435,7 +438,7 @@ export function execute(command: cli.ICommand) {
   //console.log("connectionInfo: ", connectionInfo);
 
 
-  return Q.resolve().then(() => {
+  return Q(<void>null).then(() => {
     switch (command.type) {
       // Must not be logged in
       case cli.CommandType.login:
@@ -619,6 +622,7 @@ function login(command: cli.ILoginCommand): Promise<void> {
       }
     });
   } else {
+    //MARK: TODO Handle this
     return loginWithExternalAuthentication("login", command.serverUrl);
   }
 }
@@ -1572,11 +1576,22 @@ function sessionRemove(command: cli.ISessionRemoveCommand): Promise<void> {
   }
 }
 
-function releaseErrorHandler(error: CodePushError, command: cli.ICommand): void {
+function releaseErrorHandler(error: any, command: cli.ICommand): void {
   if ((<any>command).noDuplicateReleaseError && error.statusCode === AccountManager.ERROR_CONFLICT) {
     console.log(chalk.yellow("[Warning] " + error.message));
+    return;
+  }
+  // Print only the main error message by default
+  console.error(chalk.red(`✖  ${error.message || error.toString()}`));
+  // Print stack trace and extra details only if --verbose is used
+  if (isVerbose) {
+    if (error instanceof Error && error.stack) {
+      console.error(chalk.gray(error.stack));
+    } else {
+      console.error(chalk.gray(JSON.stringify(error, null, 2)));
+    }
   } else {
-    throw error;
+    console.error(chalk.gray('Run with --verbose for more details.'));
   }
 }
 

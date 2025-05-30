@@ -7,6 +7,7 @@ import * as chalk from "chalk";
 const MAX_STACK_LINES = 6;
 
 export function printDetailedError(err: unknown): void {
+  const isVerbose = process.argv.includes('--verbose');
   const red    = (txt: string) => chalk.redBright.bold(txt);
   const yellow = (txt: string) => chalk.yellowBright(txt);
   const gray   = (txt: string) => chalk.gray(txt);
@@ -101,18 +102,22 @@ export function printDetailedError(err: unknown): void {
     console.error(yellow(`   Code : ${code}`));
   }
 
-  const extraKeys = Object.keys(extras).filter(k => extras[k] !== undefined && extras[k] !== null && extras[k] !== "");
-  if (extraKeys.length) {
-    console.error(yellow(`   Info : ${JSON.stringify(extras, null, 2)}`));
-  }
-
-  // 4️⃣  Stack trace (dim, truncated)
-  if (stack) {
-    const trimmed = stack
-      .split("\n")
-      .slice(0, MAX_STACK_LINES)
-      .join("\n");
-    console.error(gray(trimmed));
+  if (isVerbose) {
+    const extraKeys = Object.keys(extras).filter(k => extras[k] !== undefined && extras[k] !== null && extras[k] !== "");
+    if (extraKeys.length) {
+      console.error(gray(`   Info : ${JSON.stringify(extras, null, 2)}`));
+    }
+    // 4️⃣  Stack trace (dim, truncated)
+    if (stack) {
+      const trimmed = stack
+        .split("\n")
+        .slice(0, MAX_STACK_LINES)
+        .join("\n");
+      console.error(gray(trimmed));
+    }
+  } else {
+    // Suggest verbose for more details
+    console.error(gray('Run with --verbose for more details.'));
   }
 }
 

@@ -1,6 +1,6 @@
 {
-  "name": "dream-dota-cli",
-  "version": "0.0.8",
+  "name": "dota-cli",
+  "version": "0.0.1",
   "description": "Management CLI for the Dota service",
   "main": "./script/cli.js",
   "scripts": {
@@ -11,7 +11,7 @@
     "lint:fix": "npx eslint ./script/**/*.ts --fix",
     "debug": "node --inspect-brk ./bin/script/cli.js",
     "cli:setup": "npm cache clean --force && rm -rf node_modules package-lock.json && npm install && npm run build && npm install -g .",
-    "exec": "npm run build && npm install -g"
+    "exec": "npm run build && npm run build && npm install -g"
   },
   "bin": {
     "dota": "./bin/script/cli.js"
@@ -63,12 +63,10 @@
     "superagent-mock": "^4.0.0",
     "typescript": "^5.1.3",
     "which": "^3.0.1",
-    "wordwrap": "^1.0.0"
-  },
-  "files": [
-    "bin/",
-    "script/",
-    "README.md",
-    "LICENSE"
-  ]
+    "wordwrap": "^1.0.0",
+    "chalk": "^4.1.2",
+    "slash": "^1.0.0",
+    "yazl": "^2.5.1",
+    "superagent": "^10.2.0"
+  }
 }
