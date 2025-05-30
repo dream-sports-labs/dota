@@ -22,7 +22,7 @@
     "@mantine/hooks": "^7.13.2",
     "@mantine/notifications": "^7.14.0",
     "@mantine/spotlight": "^7.13.3",
-    "@remix-run/express": "^2.14.0",
+    "@remix-run/express": "^2.16.3",
     "@remix-run/node": "^2.13.1",
     "@remix-run/react": "^2.13.1",
     "@remix-run/serve": "^2.13.1",
