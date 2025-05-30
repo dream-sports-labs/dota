@@ -1,5 +1,3 @@
-
-
 import * as fs from "fs";
 import * as os from "os";
 import * as path from "path";
@@ -57,18 +55,18 @@ function urlEncode(strings: string[], ...values: string[]): string {
 
 function saveOrganizationsSync(orgs: Organisation[], forceSave = false): void {
   try {
-    // Check if file exists and is non-empty
     const fileExists = fs.existsSync(ORG_FILE_PATH);
     const isFileEmpty = fileExists && fs.readFileSync(ORG_FILE_PATH, 'utf-8').trim() === '';
 
     if (forceSave || !fileExists || isFileEmpty) {
-      fs.writeFileSync(ORG_FILE_PATH, JSON.stringify(orgs, null, 2), 'utf-8');
-      //console.log(`Organizations saved to ${ORG_FILE_PATH}`);
+      const dataToSave = JSON.stringify(orgs, null, 2);
+      fs.writeFileSync(ORG_FILE_PATH, dataToSave, 'utf-8');
+      console.log(`[saveOrganizationsSync] Saved ${orgs.length} organizations to ${ORG_FILE_PATH}. Data: ${dataToSave.substring(0,100)}...`);
     } else {
-      //console.log("Organizations already exist, skipping save.");
+      console.log(`[saveOrganizationsSync] Organizations file ${ORG_FILE_PATH} exists and is not empty, and forceSave is false. Skipping save.`);
     }
   } catch (error) {
-    console.error(`Error saving organizations: ${error.message}`);
+    console.error(`[saveOrganizationsSync] Error saving organizations to ${ORG_FILE_PATH}: ${error.message}`);
   }
 }
 
@@ -77,13 +75,13 @@ function loadOrganizationsSync(): Organisation[] {
   try {
     if (fs.existsSync(ORG_FILE_PATH)) {
       const data = fs.readFileSync(ORG_FILE_PATH, 'utf-8');
-      // console.log("data ::", data);
-      return JSON.parse(data) as Organisation[];
+      const loadedOrgs = JSON.parse(data) as Organisation[];
+      return loadedOrgs;
     }
     return [];
   } catch (error) {
-    console.error(`Error loading organizations: ${error.message}`);
-    return [];
+    console.error(`[loadOrganizationsSync] Error loading organizations from ${ORG_FILE_PATH}: ${error.message}`);
+    return []; // Return empty on error to prevent crash
   }
 }
 
@@ -92,7 +90,7 @@ class AccountManager {
     OWNER: "Owner",
     COLLABORATOR: "Collaborator",
   };
-  public static SERVER_URL = "http://localhost:3000";
+  public static SERVER_URL = "http://localhost:3010";
 
   private static API_VERSION: number = 2;
 
@@ -160,15 +158,23 @@ class AccountManager {
   }
 
   public getTenantId(tenantName: string): string {
-      if(!this.organisations || this.organisations.length === 0){
-          return "";
+      if(!this.organisations || this.organisations.length === 0) {
+          console.log("[getTenantId] Organisation list in memory is empty, attempting to load from sync file.");
+          this.organisations = loadOrganizationsSync();
       }
+      
       let tenantId: string = "";
-      this.organisations.forEach((org: Organisation) => {
-          if(org.displayName === tenantName){
-              tenantId = org.id;
-          }
-      });
+      if (this.organisations && this.organisations.length > 0) {
+        this.organisations.forEach((org: Organisation) => {
+            if(org.displayName === tenantName){
+                tenantId = org.id;
+            }
+        });
+      }
+      
+      if (!tenantId && tenantName) {
+          console.warn(`[getTenantId] Tenant ID for "${tenantName}" could not be resolved from current organisation list: ${this.organisations.map(o=>o.displayName)}`);
+      }
       return tenantId;
   }
 
@@ -275,8 +281,30 @@ class AccountManager {
 
   // Apps
   public getApps(): Promise<App[]> {
-    //add tenant here
-    return this.get(urlEncode(["/apps"])).then((res: JsonResponse) => res.body.apps);
+    let url = "/apps"; // Default: gets all apps for the user
+
+    if (this.passedOrgName && this.passedOrgName.length > 0) {
+        const tenantIdToFilterBy = this.getTenantId(this.passedOrgName);
+
+        if (tenantIdToFilterBy && tenantIdToFilterBy.length > 0) {
+            // Set tenant ID in headers instead of URL
+            this._customHeaders = {
+                ...this._customHeaders,
+                tenant: tenantIdToFilterBy
+            };
+            console.log(`[getApps] Filtering apps by org "${this.passedOrgName}" (ID: ${tenantIdToFilterBy}). Using tenant header.`);
+        } else {
+            console.warn(`[getApps] Organization "${this.passedOrgName}" not found or ID could not be resolved. Returning empty app list.`);
+            this.passedOrgName = null;
+            return Q.resolve([]);
+        }
+    } else {
+        console.log("[getApps] No specific org provided, fetching all apps for the user. API URL: /apps");
+    }
+
+    return this.get(url).then((res: JsonResponse) => {
+        return res.body.apps || [];
+    });
   }
 
   public getApp(appName: string): Promise<App> {
@@ -305,6 +333,13 @@ class AccountManager {
 
   public renameApp(oldAppName: string, newAppName: string): Promise<void> {
     //add tenant here
+    let tenantId = this.getTenantId(this.passedOrgName);
+    if(tenantId && tenantId.length > 0){
+        this._customHeaders = {
+            ...this._customHeaders,
+            tenant: tenantId
+        };
+    }
     return this.patch(urlEncode([`/apps/${oldAppName}`]), JSON.stringify({ name: newAppName })).then(() => null);
   }
 
@@ -643,8 +678,6 @@ class AccountManager {
         request.set(headerName, this._customHeaders[headerName]);
       }
     }
-    // console.log("this.organisations ::", this.organisations);
-    // console.log("this.passedOrgName ::", this.passedOrgName);
     if(this.passedOrgName && this.passedOrgName.length > 0){
         let tenantId = this.getTenantId(this.passedOrgName);
         request.set("tenant", tenantId);

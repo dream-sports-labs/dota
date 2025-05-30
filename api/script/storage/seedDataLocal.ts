@@ -38,17 +38,21 @@ const jsonStorageData = {
   },
   "tenants": {
     "tenant_1": {
-      "displayName": "Organization One",
+      "displayName": "organization-one",
       "createdBy": "id_0"
     },
     "tenant_2": {
-      "displayName": "Organization Two",
+      "displayName": "organization-two",
       "createdBy": "id_1"
-    }
+    },
+    "tenant_3": {
+      "displayName": "org-hyphenated",
+      "createdBy": "id_0"
+    },
   },
   "apps": {
     "id_2": {
-      "name": "App One",
+      "name": "app-one",
       "accountId": "id_0",
       "tenantId": "tenant_1",
       "createdTime": Date.now(),
@@ -70,7 +74,7 @@ const jsonStorageData = {
       }
     },
     "id_3": {
-      "name": "App Two",
+      "name": "app-two",
       "accountId": "id_1",
       "tenantId": "tenant_2",
       "createdTime": Date.now(),
@@ -92,7 +96,7 @@ const jsonStorageData = {
       }
     },
     "id_4": {
-      "name": "Independent App",
+      "name": "independent-app",
       "accountId": "id_0",
       "createdTime": Date.now(),
       "collaborators": {
@@ -101,7 +105,29 @@ const jsonStorageData = {
           "role": "Admin"
         }
       }
-    }
+    },
+    "id_5": {
+      "name": "hyphenated-app",
+      "accountId": "id_0",
+      "tenantId": "tenant_3",
+      "createdTime": Date.now(),
+      "collaborators": {
+        "user1@example.com": {
+          "permission": "Owner",
+          "role": "Admin"
+        }
+      },
+      "deployments": {
+        "main-deployment": {
+          "id": "id_7",
+          "key": "deployment_key_hyphenated",
+          "name": "main-deployment",
+          "package": "pkg_hyphenated_1",
+          "latestPackage": "pkg_hyphenated_1",
+          "createdTime": 1731269070
+        }
+      }
+    },
   },
   "deployments": {
     "id_5": {
@@ -117,7 +143,14 @@ const jsonStorageData = {
       "appId": "id_3",
       "packageId": "pkg_current_2",
       "createdTime": 1731269070
-    }
+    },
+    "id_7": {
+      "name": "main-deployment",
+      "key": "deployment_key_hyphenated",
+      "appId": "id_5",
+      "packageId": "pkg_hyphenated_1",
+      "createdTime": 1731269070
+    },
   },
   "packages": {
     "pkg_1": {
@@ -170,7 +203,58 @@ const jsonStorageData = {
       "releasedBy": "user1@example.com",
       "diffPackageMap": {},
       "deploymentId": "id_5"
-    }
+    },
+    "pkg_hyphenated_1": {
+      "packageHash": "hash_hyphenated_1",
+      "blobUrl": "https://example.com/blob_hyphenated",
+      "manifestBlobUrl": "https://example.com/manifest_hyphenated",
+      "description": "Initial release for hyphenated app",
+      "isDisabled": false,
+      "isMandatory": false,
+      "appVersion": "1.0.0",
+      "rollout": 100,
+      "size": 1234,
+      "releaseMethod": "Upload",
+      "uploadTime": 1731269070,
+      "label": "v1",
+      "releasedBy": "user1@example.com",
+      "diffPackageMap": {},
+      "deploymentId": "id_7"
+    },
+    "pkg_hyphenated_2": {
+      "packageHash": "hash_hyphenated_2",
+      "blobUrl": "https://example.com/blob_hyphenated_v2",
+      "manifestBlobUrl": "https://example.com/manifest_hyphenated_v2",
+      "description": "Second release for hyphenated app",
+      "isDisabled": false,
+      "isMandatory": false,
+      "appVersion": "1.0.1",
+      "rollout": 100,
+      "size": 2345,
+      "releaseMethod": "Upload",
+      "uploadTime": 1731269080,
+      "label": "v2",
+      "releasedBy": "user1@example.com",
+      "diffPackageMap": {},
+      "deploymentId": "id_7"
+    },
+    "pkg_hyphenated_3": {
+      "packageHash": "hash_hyphenated_3",
+      "blobUrl": "https://example.com/blob_hyphenated_v3",
+      "manifestBlobUrl": "https://example.com/manifest_hyphenated_v3",
+      "description": "Third release for hyphenated app",
+      "isDisabled": false,
+      "isMandatory": false,
+      "appVersion": "1.0.2",
+      "rollout": 100,
+      "size": 3456,
+      "releaseMethod": "Upload",
+      "uploadTime": 1731269090,
+      "label": "v3",
+      "releasedBy": "user1@example.com",
+      "diffPackageMap": {},
+      "deploymentId": "id_7"
+    },
   },
   "accessKeys": {
     "id_6": {
