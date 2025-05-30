@@ -72,3 +72,4 @@ dota
 cli/package-lock.json
 cli/dota.config
 package-lock.json
+.dota.config
