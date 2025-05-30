@@ -1,5 +1,5 @@
 {
-  "name": "dota-cli",
+  "name": "dota-cli-test",
   "version": "0.0.1",
   "description": "Management CLI for the Dota service",
   "main": "./script/cli.js",

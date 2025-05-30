@@ -53,6 +53,16 @@ export default function CLICommands() {
               </div>
           </div>
 
+          <div className="alert-note mb-6">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="alert-icon"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+            <div className="alert-content">
+              <strong>Error Handling:</strong>
+              <p>
+                By default, the CLI displays concise error messages. To see full error logs and stack traces (in grey), use the <code>--verbose</code> flag with any command. Example: <code>dota app list --verbose</code>.
+              </p>
+            </div>
+          </div>
+
           {/* -------------------------------------------------------------
               APP MANAGEMENT
           ------------------------------------------------------------- */}
@@ -763,36 +773,6 @@ export default function CLICommands() {
   dota deployment h <ownerName>/<appName> <deploymentName> [options]`}
               </code>
             </pre>
-          </div>
-
-          {/* -------------------------------------------------------------
-              METRICS
-          ------------------------------------------------------------- */}
-          <div className="mb-8" id="metrics">
-            <h2 className="text-2xl font-bold mb-4">Metrics</h2>
-            <p className="mb-4">
-              View installation and adoption metrics for a specific release of your app using the following command:
-            </p>
-            <p className="mb-2">Usage:</p>
-            <pre className="code-block mb-6">
-              <code>{`  dota metrics <org>/<app> <deployment> <label> <targetVersion>`}</code>
-            </pre>
-            <p className="mb-2">Example:</p>
-            <pre className="code-block mb-6">
-              <code>{`  dota metrics organization-one/app-one "Deployment One" v1 1.0.0`}</code>
-            </pre>
-            <p className="mb-4">This will output:</p>
-            <pre className="code-block mb-6">
-              <code>{`Metrics for organization-one/app-one [Deployment One] label: v1, target version: 1.0.0
-  Rollout:   100%
-  Adoption:  0.00% (0 of 0 installs)
-  Rollbacks: 0.00% (0 of 0 installs)`}</code>
-            </pre>
-            <ul className="list-disc pl-6 space-y-2 mb-4">
-              <li><strong>Rollout</strong> - The percentage of users this release is available to.</li>
-              <li><strong>Adoption</strong> - The percentage and count of successful installs out of downloads.</li>
-              <li><strong>Rollbacks</strong> - The percentage and count of rollbacks out of installs.</li>
-            </ul>
           </div>
         </div>
       </div>

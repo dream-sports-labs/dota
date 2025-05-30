@@ -68,5 +68,7 @@ AzuriteConfig
 /web/build
 dota
 
-# DOTA CLI config
-cli/.dota.config
+# DOTA CLI config and lock files
+cli/package-lock.json
+cli/dota.config
+package-lock.json
