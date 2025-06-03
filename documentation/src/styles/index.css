@@ -414,9 +414,9 @@
   z-index: 0; /* Behind content */
   background: linear-gradient(
     135deg,
-    hsl(var(--primary-hue) var(--primary-saturation) 97%) 0%,
-    /* Very light primary */ hsl(var(--primary-accent-hue) var(--primary-accent-saturation) 97%) 50%,
-    /* Very light accent */ hsl(var(--primary-hue) var(--primary-saturation) 97%) 100%
+    hsl(var(--primary-hue) var(--primary-saturation) 95%) 0%,
+    /* Slightly darker primary */ hsl(var(--primary-accent-hue) var(--primary-accent-saturation) 95%) 50%,
+    /* Slightly darker accent */ hsl(var(--primary-hue) var(--primary-saturation) 95%) 100%
   );
   background-size: 200% 200%;
   animation: gradientShift 15s ease infinite;

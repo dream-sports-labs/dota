@@ -14,17 +14,20 @@ export const seedData = {
     { id: "id_1", email: "user2@example.com", name: "User Two", createdTime: new Date().getTime() },
   ],
   tenants: [
-    { id: "tenant_1", displayName: "Organization One", createdBy: "id_0" },
-    { id: "tenant_2", displayName: "Organization Two", createdBy: "id_1" },
+    { id: "tenant_1", displayName: "organization-one", createdBy: "id_0" },
+    { id: "tenant_2", displayName: "organization-two", createdBy: "id_1" },
+    { id: "tenant_3", displayName: "org-hyphenated", createdBy: "id_0" },
   ],
   apps: [
-    { id: "id_2", name: "App One", accountId: "id_0", tenantId: "tenant_1", createdTime: new Date().getTime() },
-    { id: "id_3", name: "App Two", accountId: "id_1", tenantId: "tenant_2", createdTime: new Date().getTime() },
-    { id: "id_4", name: "Independent App", accountId: "id_0", createdTime: new Date().getTime() }, // App without a tenant association
+    { id: "id_2", name: "app-one", accountId: "id_0", tenantId: "tenant_1", createdTime: new Date().getTime() },
+    { id: "id_3", name: "app-two", accountId: "id_1", tenantId: "tenant_2", createdTime: new Date().getTime() },
+    { id: "id_4", name: "independent-app", accountId: "id_0", createdTime: new Date().getTime() }, // App without a tenant association
+    { id: "id_5", name: "hyphenated-app", accountId: "id_0", tenantId: "tenant_3", createdTime: new Date().getTime() },
   ],
   collaborators: [
     { email: "user1@example.com", accountId: "id_0", appId: "id_2", permission: "Owner", role: "Admin" },
     { email: "user2@example.com", accountId: "id_1", appId: "id_3", permission: "Owner", role: "Admin" },
+    { email: "user1@example.com", accountId: "id_0", appId: "id_5", permission: "Owner", role: "Admin" },
   ],
   deployments: [
     {
@@ -41,6 +44,14 @@ export const seedData = {
       key: "deployment_key_2",
       appId: "id_3",
       packageId: "pkg_current_2", // Link to the current package
+      createdTime: 1731269070,
+    },
+    {
+      id: "id_7",
+      name: "main-deployment",
+      key: "deployment_key_hyphenated",
+      appId: "id_5",
+      packageId: "pkg_hyphenated_1",
       createdTime: 1731269070,
     },
   ],
@@ -113,6 +124,57 @@ export const seedData = {
       deploymentId: "id_5",
       rollout: 100,
     },
+    {
+      id: "pkg_hyphenated_1",
+      appVersion: "1.0.0",
+      blobUrl: "https://example.com/blob_hyphenated",
+      description: "Initial release for hyphenated app",
+      isDisabled: false,
+      isMandatory: false,
+      label: "v1",
+      manifestBlobUrl: "https://example.com/manifest_hyphenated",
+      packageHash: "hash_hyphenated_1",
+      releasedBy: "user1@example.com",
+      releaseMethod: "Upload",
+      size: 1234,
+      uploadTime: 1731269070,
+      deploymentId: "id_7",
+      rollout: 100,
+    },
+    {
+      id: "pkg_hyphenated_2",
+      appVersion: "1.0.1",
+      blobUrl: "https://example.com/blob_hyphenated_v2",
+      description: "Second release for hyphenated app",
+      isDisabled: false,
+      isMandatory: false,
+      label: "v2",
+      manifestBlobUrl: "https://example.com/manifest_hyphenated_v2",
+      packageHash: "hash_hyphenated_2",
+      releasedBy: "user1@example.com",
+      releaseMethod: "Upload",
+      size: 2345,
+      uploadTime: 1731269080,
+      deploymentId: "id_7",
+      rollout: 100,
+    },
+    {
+      id: "pkg_hyphenated_3",
+      appVersion: "1.0.2",
+      blobUrl: "https://example.com/blob_hyphenated_v3",
+      description: "Third release for hyphenated app",
+      isDisabled: false,
+      isMandatory: false,
+      label: "v3",
+      manifestBlobUrl: "https://example.com/manifest_hyphenated_v3",
+      packageHash: "hash_hyphenated_3",
+      releasedBy: "user1@example.com",
+      releaseMethod: "Upload",
+      size: 3456,
+      uploadTime: 1731269090,
+      deploymentId: "id_7",
+      rollout: 100,
+    },
   ],
   accessKeys: [
     {
@@ -134,6 +196,7 @@ export const seedData = {
       friendlyName: "Mock Google Token for Development",
       expires: Date.now() + (365 * 24 * 60 * 60 * 1000), // One year from now
       scope: "all",
+      isSession: true
     }
   ],
 };

@@ -1,5 +1,3 @@
-
-
 import * as yargs from "yargs";
 import * as cli from "../script/types/cli";
 import * as chalk from "chalk";
@@ -309,7 +307,22 @@ yargs
     yargs
       .usage(USAGE_PREFIX + " access-key <command>")
       .demand(/*count*/ 2, /*max*/ 2) // Require exactly two non-option arguments.
-      .command("add", "Create a new access key associated with your account", (yargs: yargs.Argv) => accessKeyAdd("add", yargs))
+      .command("add", "Create a new access key associated with your account", (yargs: yargs.Argv) => {
+        isValidCommand = true;
+        yargs
+          .usage(USAGE_PREFIX + " access-key add <friendlyName>")
+          .demand(/*count*/ 1, /*max*/ 1) // Require exactly one non-option arguments
+          .example("access-key add \"VSTS Integration\"", 'Creates a new access key with the name "VSTS Integration", which expires in 60 days')
+          .example("access-key add \"One time key\" --ttl 5m", 'Creates a new access key with the name "One time key", which expires in 5 minutes')
+          .option("ttl", {
+            default: "60d",
+            demand: false,
+            description: "Duration string which specifies the amount of time that the access key should remain valid for (e.g 5m, 60d, 1y)",
+            type: "string",
+          });
+
+        addCommonConfiguration(yargs);
+      })
       .command("patch", "Update the name and/or TTL of an existing access key", (yargs: yargs.Argv) => accessKeyPatch("patch", yargs))
       .command("remove", "Remove an existing access key", (yargs: yargs.Argv) => accessKeyRemove("remove", yargs))
       .command("rm", "Remove an existing access key", (yargs: yargs.Argv) => accessKeyRemove("rm", yargs))
@@ -324,8 +337,6 @@ yargs
     yargs
       .usage(USAGE_PREFIX + " org <command>")
       .demand(/*count*/ 2, /*max*/ 2) // Require exactly two non-option arguments.
-      .command("remove", "Remove an existing organisation", (yargs: yargs.Argv) => accessKeyRemove("remove", yargs))
-      .command("rm", "Remove an existing organisation", (yargs: yargs.Argv) => accessKeyRemove("rm", yargs))
       .command("list", "List the organisations associated with your account", (yargs: yargs.Argv) => orgList("list", yargs))
       .command("ls", "List the organisations associated with your account", (yargs: yargs.Argv) => orgList("ls", yargs))
       .check((argv: any, aliases: { [aliases: string]: string }): any => isValidCommand); // Report unrecognized, non-hyphenated command category.
@@ -922,6 +933,15 @@ yargs
       .example("whoami", "Display the account info for the current login session");
     addCommonConfiguration(yargs);
   })
+  .command("metrics", "View and manage your app metrics", (yargs: yargs.Argv) => {
+    isValidCommandCategory = true;
+    isValidCommand = true;
+    yargs
+      .usage(USAGE_PREFIX + " metrics <org>/<app> <deployment> <label> <targetVersion>")
+      .demand(/*count*/ 4, /*max*/ 4) // Require exactly four non-option arguments
+      .example("metrics OrgName/MyApp Production v3 1.0.3", "View metrics for the v3 release of the MyApp app targeting version 1.0.3");
+    addCommonConfiguration(yargs);
+  })
   .alias("v", "version")
   .version(packageJson.version)
   .wrap(/*columnLimit*/ null)
@@ -947,7 +967,7 @@ export function createCommand(): cli.ICommand {
             if (arg2) {
               cmd = { type: cli.CommandType.accessKeyAdd };
               const accessKeyAddCmd = <cli.IAccessKeyAddCommand>cmd;
-              accessKeyAddCmd.name = arg2;
+              accessKeyAddCmd.friendlyName = arg2;
               const ttlOption: string = argv["ttl"] as any;
               if (isDefined(ttlOption)) {
                 accessKeyAddCmd.ttl = parseDurationMilliseconds(ttlOption);
@@ -998,14 +1018,6 @@ export function createCommand(): cli.ICommand {
             cmd = { type: cli.CommandType.orgList };
             (<cli.IOrgListCommand>cmd).format = argv["format"] as any;
             break;
-
-          case "remove":
-          case "rm":
-            if (arg2) {
-              cmd = { type: cli.CommandType.accessKeyRemove };
-              (<cli.IAccessKeyRemoveCommand>cmd).accessKey = arg2;
-            }
-            break;
         }
         break;
 
@@ -1014,8 +1026,12 @@ export function createCommand(): cli.ICommand {
         switch (arg1) {
           case "add":
             if (arg2) {
+              // Enforce org/app format
+              if (!/^\w[^/]*\/\w[^/]*$/.test(arg2)) {
+                console.error("✖  You must specify the app as <org>/<app>. Standalone app creation is not allowed.\nUsage: dota app add <ownerName>/<appName>");
+                process.exit(1);
+              }
               cmd = { type: cli.CommandType.appAdd };
-
               (<cli.IAppAddCommand>cmd).appName = arg2;
             }
             break;
@@ -1030,8 +1046,12 @@ export function createCommand(): cli.ICommand {
           case "remove":
           case "rm":
             if (arg2) {
+              // Enforce org/app format
+              if (!/^\w[^/]*\/\w[^/]*$/.test(arg2)) {
+                console.error("✖  You must specify the app as <org>/<app>. Ambiguous app deletion is not allowed.\nUsage: dota app rm <ownerName>/<appName>");
+                process.exit(1);
+              }
               cmd = { type: cli.CommandType.appRemove };
-
               (<cli.IAppRemoveCommand>cmd).appName = arg2;
             }
             break;
@@ -1248,9 +1268,7 @@ export function createCommand(): cli.ICommand {
         break;
 
       case "release":
-        //console.log('arg0, arg1, arg2, arg3', arg0, arg1, arg2, arg3);
         if (arg1 && arg2 && arg3) {
-          //console.log('arg0, arg1, arg2, arg3', arg0, arg1, arg2, arg3);
           cmd = { type: cli.CommandType.release };
 
           const releaseCommand = <cli.IReleaseCommand>cmd;
@@ -1258,7 +1276,8 @@ export function createCommand(): cli.ICommand {
           releaseCommand.appName = arg1;
           releaseCommand.package = arg2;
           releaseCommand.appStoreVersion = arg3;
-          releaseCommand.deploymentName = argv["deploymentName"] as any;
+          // Ensure deploymentName is properly handled
+          releaseCommand.deploymentName = argv["deploymentName"] ? argv["deploymentName"].toString().split(",")[0] : "Staging";
           releaseCommand.description = argv["description"] ? backslash(argv["description"]) : "";
           releaseCommand.disabled = argv["disabled"] as any;
           releaseCommand.mandatory = argv["mandatory"] as any;
@@ -1278,7 +1297,8 @@ export function createCommand(): cli.ICommand {
 
           releaseReactCommand.appStoreVersion = argv["targetBinaryVersion"] as any;
           releaseReactCommand.bundleName = argv["bundleName"] as any;
-          releaseReactCommand.deploymentName = argv["deploymentName"] as any;
+          // Ensure deploymentName is properly handled
+          releaseReactCommand.deploymentName = argv["deploymentName"] ? argv["deploymentName"].toString().split(",")[0] : "Staging";
           releaseReactCommand.disabled = argv["disabled"] as any;
           releaseReactCommand.description = argv["description"] ? backslash(argv["description"]) : "";
           releaseReactCommand.development = argv["development"] as any;
@@ -1335,6 +1355,28 @@ export function createCommand(): cli.ICommand {
 
       case "whoami":
         cmd = { type: cli.CommandType.whoami };
+        break;
+
+      case "metrics":
+        if (arg1 && arg2 && arg3 && arg4) {
+          // arg1: org/app, arg2: deployment, arg3: label, arg4: targetVersion
+          const orgApp = arg1.split("/");
+          if (orgApp.length !== 2) {
+            console.error("✖  You must specify the app as <org>/<app>.\nUsage: dota metrics <org>/<app> <deployment> <label> <targetVersion>");
+            process.exit(1);
+          }
+          cmd = {
+            type: cli.CommandType.metrics,
+            org: orgApp[0],
+            appName: orgApp[1],
+            deploymentName: arg2,
+            label: arg3,
+            targetVersion: arg4,
+          } as cli.IMetricsCommand;
+        } else {
+          console.error("✖  Usage: dota metrics <org>/<app> <deployment> <label> <targetVersion>");
+          process.exit(1);
+        }
         break;
     }
 
