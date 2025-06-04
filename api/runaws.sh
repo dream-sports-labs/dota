@@ -492,6 +492,7 @@ if [ "$WITH_WEB" = true ]; then
 fi
 echo "ℹ️  Server is running in background with PID: $SERVER_PID"
 echo "ℹ️  To stop the server, run: kill $SERVER_PID"
+handle_login
 echo "✅ Setup complete! You can now use the CLI."
 
 # Keep the script running

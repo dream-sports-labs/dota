@@ -28,6 +28,40 @@ export default function CLICommands() {
               with specific usage details.
             </p>
           </div>
+          <div className="alert-note mb-6">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="alert-icon"
+              >
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="12" y1="16" x2="12" y2="12"></line>
+                <line x1="12" y1="8" x2="12.01" y2="8"></line>
+              </svg>
+              <div className="alert-content">
+                    <strong>Note:</strong>
+                    <p>
+                    Organization names should not contain spaces. Use camelCase or hyphens for multi-word organization names (e.g., "MyOrg" or "my-org").
+                    </p>
+              </div>
+          </div>
+
+          <div className="alert-note mb-6">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="alert-icon"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+            <div className="alert-content">
+              <strong>Error Handling:</strong>
+              <p>
+                By default, the CLI displays concise error messages. To see full error logs and stack traces (in grey), use the <code>--verbose</code> flag with any command. Example: <code>dota app list --verbose</code>.
+              </p>
+            </div>
+          </div>
 
           {/* -------------------------------------------------------------
               APP MANAGEMENT
@@ -178,10 +212,17 @@ export default function CLICommands() {
   dota app ls --format json
 
 # List all apps for a specific org
-  dota app <orgName> ls
-  dota app <orgName> ls --format json`}
+  dota app list --org <orgName>
+  dota app ls --org <orgName> --format json`}
               </code>
             </pre>
+            <p className="mb-4">
+              The table output shows the following columns:
+            </p>
+            <ul className="list-disc pl-6 space-y-2 mb-4">
+              <li><strong>Name</strong> - The name of the app</li>
+              <li><strong>Deployments</strong> - The list of deployments associated with the app</li>
+            </ul>
           </div>
 
           {/* -------------------------------------------------------------
@@ -191,8 +232,7 @@ export default function CLICommands() {
             <h2 className="text-2xl font-bold mb-4">Organization Management</h2>
 
             <p className="mb-4">
-              You can view and manage the organizations associated with your account using the
-              following commands.
+              Commands for managing organizations in DOTA.
             </p>
 
             <p className="mb-4">
@@ -210,21 +250,6 @@ export default function CLICommands() {
               <code>
 {`  dota org ls
   dota org ls --format json`}
-              </code>
-            </pre>
-
-            <p className="mb-4">To remove an organization:</p>
-            <p className="mb-2">Usage:</p>
-            <pre className="code-block mb-6">
-              <code>
-{`  dota org remove <orgName>
-  dota org rm <orgName>`}
-              </code>
-            </pre>
-            <p className="mb-2">Example:</p>
-            <pre className="code-block mb-6">
-              <code>
-{`  dota org rm MyOrganization`}
               </code>
             </pre>
           </div>
@@ -579,12 +604,21 @@ export default function CLICommands() {
               <b>Options:</b>
             </p>
             <ul className="list-disc pl-6 space-y-2 mb-4">
-              <li><strong>-d, --deploymentName</strong>: Deployment to release the update to (default: Staging)</li>
-              <li><strong>-des, --description</strong>: Description of the changes made to the app in this release</li>
-              <li><strong>-x, --disabled</strong>: If set, the update will not be immediately downloadable</li>
-              <li><strong>-m, --mandatory</strong>: If set, the update is considered mandatory</li>
-              <li><strong>--noDuplicateReleaseError</strong>: If set, uploading an identical update will produce a warning instead of an error</li>
-              <li><strong>-r, --rollout</strong>: The percentage of users that should receive this release (defaults to 100%)</li>
+              <li><strong>-d, --deploymentName</strong>: Deployment to release the update to (default: Staging). The deployment name should be a single value without any additional suffixes.</li>
+              <li><strong>-des, --description</strong>: Description of the changes made to the app in this release. This will be displayed in the release history.</li>
+              <li><strong>-x, --disabled</strong>: If set, the update will not be immediately downloadable by users.</li>
+              <li><strong>-m, --mandatory</strong>: If set, the update is considered mandatory and users will be prompted to install it.</li>
+              <li><strong>--noDuplicateReleaseError</strong>: If set, uploading an identical update will produce a warning instead of an error.</li>
+              <li><strong>-r, --rollout</strong>: The percentage of users that should receive this release (defaults to 100%). Can be specified as a number (e.g., 20) or percentage (e.g., 20%).</li>
+            </ul>
+            <p className="mb-4">
+              <b>Notes:</b>
+            </p>
+            <ul className="list-disc pl-6 space-y-2 mb-4">
+              <li>The <code>updateContentsPath</code> should point to a directory or file containing your update content. Do not package it in a .zip or binary file.</li>
+              <li>The <code>targetBinaryVersion</code> can be specified as a semver expression (e.g., 1.0.0) or use "*" to target all versions.</li>
+              <li>The release process will automatically handle the upload and distribution of your update to the specified deployment.</li>
+              <li>You can monitor the release progress through the upload progress indicator.</li>
             </ul>
 
             <h3 className="text-xl font-semibold mb-3">Releasing Updates (React Native)</h3>

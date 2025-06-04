@@ -300,7 +300,7 @@ describe("CLI", () => {
   it("accessKeyAdd creates access key with name and default ttl", (done: Mocha.Done): void => {
     var command: cli.IAccessKeyAddCommand = {
       type: cli.CommandType.accessKeyAdd,
-      name: "Test name",
+      friendlyName: "Test name",
     };
 
     cmdexec.execute(command).done((): void => {
@@ -323,7 +323,7 @@ describe("CLI", () => {
     var ttl = 10000;
     var command: cli.IAccessKeyAddCommand = {
       type: cli.CommandType.accessKeyAdd,
-      name: "Test name",
+      friendlyName: "Test name",
       ttl,
     };
 

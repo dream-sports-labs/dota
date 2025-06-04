@@ -38,7 +38,7 @@ export function accessKeyRequestFromBody(body: AccessKeyRequest): AccessKeyReque
   }
 
   // This caters to legacy CLIs, before "description" was renamed to "friendlyName".
-  if(body.scope !== undefined)  {
+  if(body.friendlyName !== undefined)  {
     accessKeyRequest.friendlyName = body.friendlyName;
   }
   

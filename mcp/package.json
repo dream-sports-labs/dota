@@ -1,0 +1,24 @@
+{
+  "name": "dota-management-mcp-server",
+  "version": "1.0.0",
+  "description": "MCP server for Dota management operations",
+  "main": "build/index.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "node build/index.js",
+    "dev": "tsc --watch",
+    "setup": "npm install && npm run build && node setup-mcp.js"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.4",
+    "axios": "^1.7.9",
+    "zod": "^3.24.1"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "typescript": "^5.7.2"
+  },
+  "keywords": ["mcp", "dota", "management", "api"],
+  "author": "Dream Sports Labs",
+  "license": "MIT"
+} 

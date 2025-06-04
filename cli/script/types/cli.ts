@@ -1,5 +1,3 @@
-
-
 import AccountManager = require("../management-sdk");
 
 export enum CommandType {
@@ -36,13 +34,12 @@ export enum CommandType {
   sessionList,
   sessionRemove,
   whoami,
+  metrics,
 }
 
 export interface ICommand {
   type: CommandType;
 }
-
-
 
 export function parseAppName(appName: string): { ownerName: string | null, appName: string } {
   const [ownerName, app] = appName.includes('/')
@@ -56,7 +53,7 @@ export interface IAppCommand extends ICommand {
 }
 
 export interface IAccessKeyAddCommand extends ICommand {
-  name: string;
+  friendlyName: string;
   ttl?: number;
 }
 
@@ -240,4 +237,12 @@ export type ReleaseHook = (
 export interface ReleaseFile {
   sourceLocation: string; // The current location of the file on disk
   targetLocation: string; // The desired location of the file within the zip
+}
+
+export interface IMetricsCommand extends ICommand {
+  org: string;
+  appName: string;
+  deploymentName: string;
+  label: string;
+  targetVersion: string;
 }
