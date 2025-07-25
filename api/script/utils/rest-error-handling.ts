@@ -1,5 +1,3 @@
-
-
 import * as express from "express";
 
 import * as errorModule from "../error";
@@ -140,6 +138,10 @@ export function sendConnectionFailedError(res: express.Response): void {
 export function sendUnknownError(res: express.Response, error: any, next: Function): void {
   error = error || new Error("Unknown error");
 
+  let stack = typeof error["stack"] === "string" ? error["stack"] : undefined;
+  let message = error.message || (typeof error === "string" ? error : "Unknown error");
+  let code = 500;
+
   if (typeof error["stack"] === "string") {
     console.log(error["stack"]);
     sendErrorToDatadog(new Error("500: Unknown error " + error["stack"]));
@@ -147,12 +149,11 @@ export function sendUnknownError(res: express.Response, error: any, next: Functi
     console.log(error);
     sendErrorToDatadog(new Error("500: Unknown error " + error));
   }
-  
 
   if (AppInsights.isAppInsightsInstrumented()) {
     next(error); // Log error with AppInsights.
   } else {
-    res.sendStatus(500);
+    res.status(500).json({ message, stack, code });
   }
 }
 

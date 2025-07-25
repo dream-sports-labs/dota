@@ -414,9 +414,9 @@
   z-index: 0; /* Behind content */
   background: linear-gradient(
     135deg,
-    hsl(var(--primary-hue) var(--primary-saturation) 97%) 0%,
-    /* Very light primary */ hsl(var(--primary-accent-hue) var(--primary-accent-saturation) 97%) 50%,
-    /* Very light accent */ hsl(var(--primary-hue) var(--primary-saturation) 97%) 100%
+    hsl(var(--primary-hue) var(--primary-saturation) 95%) 0%,
+    /* Slightly darker primary */ hsl(var(--primary-accent-hue) var(--primary-accent-saturation) 95%) 50%,
+    /* Slightly darker accent */ hsl(var(--primary-hue) var(--primary-saturation) 95%) 100%
   );
   background-size: 200% 200%;
   animation: gradientShift 15s ease infinite;
@@ -454,14 +454,62 @@
   animation: floatSlow 8s ease-in-out infinite;
 }
 @keyframes floatSlow {
-  0% {
+  0%,
+  100% {
     transform: translateY(0px);
   }
   50% {
-    transform: translateY(-12px);
+    transform: translateY(-10px);
+  }
+}
+
+/* Horizontal scrolling animation for the trusted companies billboard */
+.animate-scroll-horizontal {
+  animation: scrollHorizontal 30s linear infinite;
+  will-change: transform;
+  /* Add subtle LED-like glow */
+  filter: drop-shadow(0 0 8px rgba(59, 130, 246, 0.15));
+}
+
+@keyframes scrollHorizontal {
+  0% {
+    transform: translateX(0);
   }
   100% {
-    transform: translateY(0px);
+    transform: translateX(-100%);
+  }
+}
+
+/* Pause animation on hover for better user experience */
+.animate-scroll-horizontal:hover {
+  animation-play-state: paused;
+  filter: drop-shadow(0 0 12px rgba(59, 130, 246, 0.25));
+}
+
+/* Make logos in the billboard slightly glow on hover */
+.animate-scroll-horizontal .logo-link {
+  transition: all 0.3s ease;
+  border-radius: 8px;
+  padding: 8px;
+}
+
+.animate-scroll-horizontal .logo-link:hover {
+  transform: scale(1.08);
+  filter: brightness(1.1) drop-shadow(0 4px 12px rgba(59, 130, 246, 0.2));
+  background-color: rgba(59, 130, 246, 0.05);
+}
+
+/* Add a subtle pulsing effect to make it more LED-like */
+.animate-scroll-horizontal {
+  animation: scrollHorizontal 30s linear infinite, ledPulse 4s ease-in-out infinite;
+}
+
+@keyframes ledPulse {
+  0%, 100% {
+    opacity: 0.95;
+  }
+  50% {
+    opacity: 1;
   }
 }
 
